@@ -14,35 +14,6 @@ import platform
 import _winreg as winreg
 import subprocess
 
-# regex to MAC address like 00-00-00-00-00-00 or 00:00:00:00:00:00 or
-# 000000000000
-MAC_ADDRESS_RE = re.compile(r"""
-    ([0-9A-F]{1,2})[:-]?
-    ([0-9A-F]{1,2})[:-]?
-    ([0-9A-F]{1,2})[:-]?
-    ([0-9A-F]{1,2})[:-]?
-    ([0-9A-F]{1,2})[:-]?
-    ([0-9A-F]{1,2})
-    """,
-    re.I | re.VERBOSE
-) # re.I: case-insensitive matching. re.VERBOSE: just look nicer.
-
-WIN_REGISTRY_PATH = "SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002BE10318}"
-
-mac_info = subprocess.check_output('GETMAC /v /FO list', stderr=subprocess.STDOUT)
-print 'Your MAC address:\n'
-print mac_info
-
-# is user an admin?
-if ctypes.windll.shell32.IsUserAnAdmin() == 0:
-    print 'Sorry! You should run this with administrative privileges if you want to change your MAC address.'
-    sys.exit()
-
-# get the dict[link name : MAC address]
-network_adapter = re.findall(r'\r\n\xcd\xf8\xc2\xe7\xca\xca\xc5\xe4\xc6\xf7:\s+(.+?)\r\n\xce\xef\xc0\xed\xb5\xd8\xd6\xb7', mac_info)
-mac_address = re.findall(r'\r\n\xce\xef\xc0\xed\xb5\xd8\xd6\xb7:\s+(.+?)\r\n\xb4\xab\xca\xe4\xc3\xfb\xb3\xc6', mac_info)
-name_mac = zip(network_adapter, mac_address)
-name_mac_dict = dict(name_mac)
 
 def get_mac_address():
     """
@@ -147,6 +118,36 @@ def set_mac_address(new_mac):
     # Adapter must be restarted in order for change to take affect
     # print 'Now you should restart your netsh'
     restart_adapter(target_index)
+
+# regex to MAC address like 00-00-00-00-00-00 or 00:00:00:00:00:00 or
+# 000000000000
+MAC_ADDRESS_RE = re.compile(r"""
+    ([0-9A-F]{1,2})[:-]?
+    ([0-9A-F]{1,2})[:-]?
+    ([0-9A-F]{1,2})[:-]?
+    ([0-9A-F]{1,2})[:-]?
+    ([0-9A-F]{1,2})[:-]?
+    ([0-9A-F]{1,2})
+    """,
+    re.I | re.VERBOSE
+) # re.I: case-insensitive matching. re.VERBOSE: just look nicer.
+
+WIN_REGISTRY_PATH = "SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002BE10318}"
+
+mac_info = subprocess.check_output('GETMAC /v /FO list', stderr=subprocess.STDOUT)
+print 'Your MAC address:\n'
+print mac_info
+
+# is user an admin?
+if ctypes.windll.shell32.IsUserAnAdmin() == 0:
+    print 'Sorry! You should run this with administrative privileges if you want to change your MAC address.'
+    sys.exit()
+
+# get the dict[link name : MAC address]
+network_adapter = re.findall(r'\r\n\xcd\xf8\xc2\xe7\xca\xca\xc5\xe4\xc6\xf7:\s+(.+?)\r\n\xce\xef\xc0\xed\xb5\xd8\xd6\xb7', mac_info)
+mac_address = re.findall(r'\r\n\xce\xef\xc0\xed\xb5\xd8\xd6\xb7:\s+(.+?)\r\n\xb4\xab\xca\xe4\xc3\xfb\xb3\xc6', mac_info)
+name_mac = zip(network_adapter, mac_address)
+name_mac_dict = dict(name_mac)
 
 index, target_device = get_device()
 print 'Your target device is: ' + target_device
