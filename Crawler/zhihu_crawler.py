@@ -3,9 +3,9 @@ from BeautifulSoup import *
 import re
 import requests
 
-url = 'https://www.zhihu.com/question/36513074'
+url = raw_input('Please input the url: ')
 save_path = 'F:/temp/'
-limit = 50
+limit = int(raw_input('limit: '))
 i = 0
 html = urllib.urlopen(url).read()
 soup = BeautifulSoup(html)
