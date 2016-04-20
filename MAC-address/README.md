@@ -4,7 +4,7 @@
 
 ## 说明 ##
 
-* 此时用的系统为Windows10，理论上适用于Windows XP/7/8/8.1/10，如发现问题，请联系我
+* 此适用的系统为Windows10，理论上适用于Windows XP/7/8/8.1/10，如发现问题，请联系我
 * Python版本为2.7
 * 源码参考自feross的SpoofMAC：https://github.com/feross/SpoofMAC.git
 * 关于MAC地址全球唯一的问题，这里修改的仅是ARP缓存表中的地址，如果你利用 `ipconfig /all` 查看的是网卡中的MAC地址，而要修改这个网卡中的地址的话只能用厂家提供的修改程序。[参考：http://blog.chinaunix.net/uid-30329684-id-5111976.html]
